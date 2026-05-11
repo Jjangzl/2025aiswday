@@ -1,0 +1,437 @@
+import React, { useState, useEffect } from 'react';
+import { Search, MessageCircle, AlertCircle, Info, Lock, CheckCircle2 } from 'lucide-react';
+
+export default function App() {
+  // ---------------------------------------------------------
+  // 📝 [선생님 설정 영역] 
+  // 1. 카카오 오픈채팅방 링크를 아래에 입력해주세요.
+  const KAKAO_CHAT_URL = "https://open.kakao.com/o/seUkHpui"; 
+  
+  // 2. 학생 데이터 (실제 학생들의 정보로 아래 배열을 수정하여 사용하세요)
+  // 데이터 형식: 학년(grade), 반(classNum), 번호(studentNum), 이름(name), 아이디(id)
+  const studentData = [
+    { grade: '1', classNum: '1', studentNum: '1', name: '김보문', id: 'bm.kim11@ai.jne.kr' },
+    { grade: '1', classNum: '1', studentNum: '2', name: '김시은', id: 'se.kim44@ai.jne.kr' },
+    { grade: '1', classNum: '1', studentNum: '3', name: '김요린', id: 'yr.kim40@ai.jne.kr' },
+    { grade: '1', classNum: '1', studentNum: '4', name: '남지민', id: 'jm.nam2@ai.jne.kr' },
+    { grade: '1', classNum: '1', studentNum: '5', name: '범시영', id: 'sy.beom1@ai.jne.kr' },
+    { grade: '1', classNum: '1', studentNum: '6', name: '이수연', id: 'sy.lee148@ai.jne.kr' },
+    { grade: '1', classNum: '1', studentNum: '7', name: '이시후', id: 'sh.lee128@ai.jne.kr' },
+    { grade: '1', classNum: '1', studentNum: '8', name: '최유나', id: 'yn.choi7@ai.jne.kr' },
+    { grade: '1', classNum: '1', studentNum: '9', name: '홍연아', id: 'ya.hong1@ai.jne.kr' },
+    { grade: '1', classNum: '1', studentNum: '10', name: '황지영', id: 'jy.hwang10@ai.jne.kr' },
+    { grade: '1', classNum: '1', studentNum: '11', name: '강호성', id: 'hs.kang12@ai.jne.kr' },
+    { grade: '1', classNum: '1', studentNum: '12', name: '구태연', id: 'ty.koo1@ai.jne.kr' },
+    { grade: '1', classNum: '1', studentNum: '13', name: '김호빈', id: 'hb.kim28@ai.jne.kr' },
+    { grade: '1', classNum: '1', studentNum: '14', name: '박다남', id: 'dn.park1@ai.jne.kr' },
+    { grade: '1', classNum: '1', studentNum: '15', name: '송용근', id: 'yg.song5@ai.jne.kr' },
+    { grade: '1', classNum: '1', studentNum: '16', name: '전민우', id: 'mu.jeon1@ai.jne.kr' },
+    { grade: '1', classNum: '1', studentNum: '17', name: '정도윤', id: 'dy.jung9@ai.jne.kr' },
+    { grade: '1', classNum: '1', studentNum: '18', name: '조운혁', id: 'uh.cho1@ai.jne.kr' },
+    { grade: '1', classNum: '1', studentNum: '19', name: '홍지우', id: 'ju.hong7@ai.jne.kr' },
+    { grade: '1', classNum: '2', studentNum: '1', name: '구승윤', id: 'sy.koo3@ai.jne.kr' },
+    { grade: '1', classNum: '2', studentNum: '2', name: '김가연', id: 'gy.kim38@ai.jne.kr' },
+    { grade: '1', classNum: '2', studentNum: '3', name: '박소현', id: 'sh.park119@ai.jne.kr' },
+    { grade: '1', classNum: '2', studentNum: '4', name: '박솔채', id: 'sc.park7@ai.jne.kr' },
+    { grade: '1', classNum: '2', studentNum: '5', name: '서지예', id: 'jy.seo9@ai.jne.kr' },
+    { grade: '1', classNum: '2', studentNum: '6', name: '신현', id: 'h.shin1@ai.jne.kr' },
+    { grade: '1', classNum: '2', studentNum: '7', name: '이다솔', id: 'ds.lee8@ai.jne.kr' },
+    { grade: '1', classNum: '2', studentNum: '8', name: '이도이', id: 'di.lee7@ai.jne.kr' },
+    { grade: '1', classNum: '2', studentNum: '9', name: '최세진', id: 'sj.choi22@ai.jne.kr' },
+    { grade: '1', classNum: '2', studentNum: '10', name: '한정안', id: 'ja.han6@ai.jne.kr' },
+    { grade: '1', classNum: '2', studentNum: '11', name: '김성찬', id: 'sc.kim13@ai.jne.kr' },
+    { grade: '1', classNum: '2', studentNum: '12', name: '김윤찬', id: 'yc.kim18@ai.jne.kr' },
+    { grade: '1', classNum: '2', studentNum: '13', name: '박형우', id: 'hu.park15@ai.jne.kr' },
+    { grade: '1', classNum: '2', studentNum: '14', name: '신준수', id: 'js.shin8@ai.jne.kr' },
+    { grade: '1', classNum: '2', studentNum: '15', name: '심명윤', id: 'my.shim1@ai.jne.kr' },
+    { grade: '1', classNum: '2', studentNum: '16', name: '양지성', id: 'js.yang10@ai.jne.kr' },
+    { grade: '1', classNum: '2', studentNum: '17', name: '양태윤', id: 'ty.yang1@ai.jne.kr' },
+    { grade: '1', classNum: '2', studentNum: '18', name: '이용우', id: 'yu.lee18@ai.jne.kr' },
+    { grade: '1', classNum: '2', studentNum: '19', name: '이은우', id: 'eu.lee10@ai.jne.kr' },
+    { grade: '1', classNum: '2', studentNum: '20', name: '정도훈', id: 'dh.jung13@ai.jne.kr' },
+    { grade: '1', classNum: '3', studentNum: '1', name: '강수정', id: 'sj.kang5@ai.jne.kr' },
+    { grade: '1', classNum: '3', studentNum: '2', name: '강예원', id: 'yw.kang1@ai.jne.kr' },
+    { grade: '1', classNum: '3', studentNum: '3', name: '구하란', id: 'hr.koo2@ai.jne.kr' },
+    { grade: '1', classNum: '3', studentNum: '4', name: '김가경', id: 'gg.kim3@ai.jne.kr' },
+    { grade: '1', classNum: '3', studentNum: '5', name: '김주비', id: 'jb.kim3@ai.jne.kr' },
+    { grade: '1', classNum: '3', studentNum: '6', name: '설리랑', id: 'rr.seol1@ai.jne.kr' },
+    { grade: '1', classNum: '3', studentNum: '7', name: '신현지', id: 'hj.shin9@ai.jne.kr' },
+    { grade: '1', classNum: '3', studentNum: '8', name: '이정연', id: 'jy.lee58@ai.jne.kr' },
+    { grade: '1', classNum: '3', studentNum: '9', name: '조여솔', id: 'ys.cho22@ai.jne.kr' },
+    { grade: '1', classNum: '3', studentNum: '10', name: '홍소율', id: 'sy.hong12@ai.jne.kr' },
+    { grade: '1', classNum: '3', studentNum: '11', name: '홍승원', id: 'sw.hong5@ai.jne.kr' },
+    { grade: '1', classNum: '3', studentNum: '12', name: '고산', id: 's.ko5@ai.jne.kr' },
+    { grade: '1', classNum: '3', studentNum: '13', name: '김은수', id: 'es.kim36@ai.jne.kr' },
+    { grade: '1', classNum: '3', studentNum: '14', name: '김종훈', id: 'jh.kim196@ai.jne.kr' },
+    { grade: '1', classNum: '3', studentNum: '15', name: '박세원', id: 'sw.park18@ai.jne.kr' },
+    { grade: '1', classNum: '3', studentNum: '16', name: '박지원', id: 'jw.park29@ai.jne.kr' },
+    { grade: '1', classNum: '3', studentNum: '17', name: '오마루', id: 'mr.oh1@ai.jne.kr' },
+    { grade: '1', classNum: '3', studentNum: '18', name: '이상민', id: 'sm.lee43@ai.jne.kr' },
+    { grade: '1', classNum: '3', studentNum: '19', name: '임윤서', id: 'ys.lim13@ai.jne.kr' },
+    { grade: '1', classNum: '3', studentNum: '20', name: '한병훈', id: 'bh.han1@ai.jne.kr' },
+    { grade: '1', classNum: '4', studentNum: '1', name: '김수연', id: 'sy.kim175@ai.jne.kr' },
+    { grade: '1', classNum: '4', studentNum: '2', name: '박경빈', id: 'gb.park4@ai.jne.kr' },
+    { grade: '1', classNum: '4', studentNum: '3', name: '박예솔', id: 'ys.park22@ai.jne.kr' },
+    { grade: '1', classNum: '4', studentNum: '4', name: '양은진', id: 'ej.yang2@ai.jne.kr' },
+    { grade: '1', classNum: '4', studentNum: '5', name: '윤재은', id: 'je.yoon1@ai.jne.kr' },
+    { grade: '1', classNum: '4', studentNum: '6', name: '이정현', id: 'jh.lee112@ai.jne.kr' },
+    { grade: '1', classNum: '4', studentNum: '7', name: '이채을', id: 'ce.lee8@ai.jne.kr' },
+    { grade: '1', classNum: '4', studentNum: '8', name: '전하연', id: 'hy.jeon8@ai.jne.kr' },
+    { grade: '1', classNum: '4', studentNum: '9', name: '주승아', id: 'sa.joo1@ai.jne.kr' },
+    { grade: '1', classNum: '4', studentNum: '10', name: '한율희', id: 'yh.han1@ai.jne.kr' },
+    { grade: '1', classNum: '4', studentNum: '11', name: '김예준', id: 'yj.kim92@ai.jne.kr' },
+    { grade: '1', classNum: '4', studentNum: '12', name: '문성훈', id: 'sh.moon17@ai.jne.kr' },
+    { grade: '1', classNum: '4', studentNum: '13', name: '박민준', id: 'mj.park20@ai.jne.kr' },
+    { grade: '1', classNum: '4', studentNum: '14', name: '박평온', id: 'po.park2@ai.jne.kr' },
+    { grade: '1', classNum: '4', studentNum: '15', name: '오종우', id: 'ju.oh7@ai.jne.kr' },
+    { grade: '1', classNum: '4', studentNum: '16', name: '오효준', id: 'hj.oh5@ai.jne.kr' },
+    { grade: '1', classNum: '4', studentNum: '17', name: '유민찬', id: 'mc.yoo1@ai.jne.kr' },
+    { grade: '1', classNum: '4', studentNum: '18', name: '이진호', id: 'jh.lee113@ai.jne.kr' },
+    { grade: '1', classNum: '4', studentNum: '19', name: '한준민', id: 'jm.han4@ai.jne.kr' },
+    { grade: '2', classNum: '1', studentNum: '1', name: '김아중', id: 'aj.kim5@ai.jne.kr' },
+    { grade: '2', classNum: '1', studentNum: '2', name: '김예음', id: 'ye.kim25@ai.jne.kr' },
+    { grade: '2', classNum: '1', studentNum: '3', name: '김은서', id: 'es.kim37@ai.jne.kr' },
+    { grade: '2', classNum: '1', studentNum: '4', name: '양효선', id: 'hs.yang6@ai.jne.kr' },
+    { grade: '2', classNum: '1', studentNum: '5', name: '엄유진', id: 'yj.eom1@ai.jne.kr' },
+    { grade: '2', classNum: '1', studentNum: '6', name: '이단비', id: 'db.lee3@ai.jne.kr' },
+    { grade: '2', classNum: '1', studentNum: '7', name: '이소윤', id: 'sy.lee149@ai.jne.kr' },
+    { grade: '2', classNum: '1', studentNum: '8', name: '이푸름', id: 'pr.lee1@ai.jne.kr' },
+    { grade: '2', classNum: '1', studentNum: '9', name: '김동완', id: 'dw.kim14@ai.jne.kr' },
+    { grade: '2', classNum: '1', studentNum: '10', name: '김준형', id: 'jh.kim197@ai.jne.kr' },
+    { grade: '2', classNum: '1', studentNum: '11', name: '김태수', id: 'ts.kim7@ai.jne.kr' },
+    { grade: '2', classNum: '1', studentNum: '12', name: '엄세훈', id: 'sh.eom1@ai.jne.kr' },
+    { grade: '2', classNum: '1', studentNum: '13', name: '왕현석', id: 'hs.wang1@ai.jne.kr' },
+    { grade: '2', classNum: '1', studentNum: '14', name: '이수호', id: 'sh.lee129@ai.jne.kr' },
+    { grade: '2', classNum: '1', studentNum: '15', name: '이준혁', id: 'jh.lee114@ai.jne.kr' },
+    { grade: '2', classNum: '1', studentNum: '16', name: '조홍준', id: 'hj.cho10@ai.jne.kr' },
+    { grade: '2', classNum: '2', studentNum: '1', name: '김보경', id: 'bg.kim8@ai.jne.kr' },
+    { grade: '2', classNum: '2', studentNum: '2', name: '김윤아', id: 'ya.kim22@ai.jne.kr' },
+    { grade: '2', classNum: '2', studentNum: '3', name: '김은아', id: 'ea.kim1@ai.jne.kr' },
+    { grade: '2', classNum: '2', studentNum: '4', name: '선윤주', id: 'yj.sun11@ai.jne.kr' },
+    { grade: '2', classNum: '2', studentNum: '5', name: '이은비', id: 'eb.lee9@ai.jne.kr' },
+    { grade: '2', classNum: '2', studentNum: '6', name: '장혜진', id: 'hj.jang14@ai.jne.kr' },
+    { grade: '2', classNum: '2', studentNum: '7', name: '조혜주', id: 'hj.cho11@ai.jne.kr' },
+    { grade: '2', classNum: '2', studentNum: '8', name: '고보현', id: 'bh.ko1@ai.jne.kr' },
+    { grade: '2', classNum: '2', studentNum: '9', name: '김량원', id: 'rw.kim12@ai.jne.kr' },
+    { grade: '2', classNum: '2', studentNum: '10', name: '김재훈', id: 'jh.kim198@ai.jne.kr' },
+    { grade: '2', classNum: '2', studentNum: '11', name: '박승현', id: 'sh.park120@ai.jne.kr' },
+    { grade: '2', classNum: '2', studentNum: '12', name: '박예찬', id: 'yc.park6@ai.jne.kr' },
+    { grade: '2', classNum: '2', studentNum: '13', name: '박진한', id: 'jh.park120@ai.jne.kr' },
+    { grade: '2', classNum: '2', studentNum: '14', name: '최승찬', id: 'sc.choi1@ai.jne.kr' },
+    { grade: '2', classNum: '2', studentNum: '15', name: '현지석', id: 'js.hyun1@ai.jne.kr' },
+    { grade: '2', classNum: '3', studentNum: '1', name: '고민경', id: 'mg.ko1@ai.jne.kr' },
+    { grade: '2', classNum: '3', studentNum: '2', name: '박지우', id: 'ju.park44@ai.jne.kr' },
+    { grade: '2', classNum: '3', studentNum: '3', name: '서현정', id: 'hj.seo9@ai.jne.kr' },
+    { grade: '2', classNum: '3', studentNum: '4', name: '이하현', id: 'hh.lee17@ai.jne.kr' },
+    { grade: '2', classNum: '3', studentNum: '5', name: '정라희', id: 'rh.jung2@ai.jne.kr' },
+    { grade: '2', classNum: '3', studentNum: '6', name: '정수빈', id: 'sb.jung12@ai.jne.kr' },
+    { grade: '2', classNum: '3', studentNum: '7', name: '한은서', id: 'es.han5@ai.jne.kr' },
+    { grade: '2', classNum: '3', studentNum: '8', name: '강무훈', id: 'mh.kang5@ai.jne.kr' },
+    { grade: '2', classNum: '3', studentNum: '9', name: '김재원', id: 'jw.kim68@ai.jne.kr' },
+    { grade: '2', classNum: '3', studentNum: '10', name: '김주완', id: 'jw.kim69@ai.jne.kr' },
+    { grade: '2', classNum: '3', studentNum: '11', name: '김혁준', id: 'hj.kim68@ai.jne.kr' },
+    { grade: '2', classNum: '3', studentNum: '12', name: '박건태', id: 'gt.park4@ai.jne.kr' },
+    { grade: '2', classNum: '3', studentNum: '13', name: '박주연', id: 'jy.park65@ai.jne.kr' },
+    { grade: '2', classNum: '3', studentNum: '14', name: '유현송', id: 'hs.yoo16@ai.jne.kr' },
+    { grade: '2', classNum: '3', studentNum: '15', name: '최종우', id: 'ju.choi15@ai.jne.kr' },
+    { grade: '2', classNum: '3', studentNum: '16', name: '황지율', id: 'jy.hwang11@ai.jne.kr' },
+    { grade: '2', classNum: '4', studentNum: '1', name: '김나경', id: 'ng.kim8@ai.jne.kr' },
+    { grade: '2', classNum: '4', studentNum: '2', name: '김명희', id: 'mh.kim37@ai.jne.kr' },
+    { grade: '2', classNum: '4', studentNum: '3', name: '김보름', id: 'br.kim2@ai.jne.kr' },
+    { grade: '2', classNum: '4', studentNum: '4', name: '김보영', id: 'by.kim7@ai.jne.kr' },
+    { grade: '2', classNum: '4', studentNum: '5', name: '김소윤', id: 'sy.kim176@ai.jne.kr' },
+    { grade: '2', classNum: '4', studentNum: '6', name: '김지효', id: 'jh.kim199@ai.jne.kr' },
+    { grade: '2', classNum: '4', studentNum: '7', name: '오예림', id: 'yr.oh6@ai.jne.kr' },
+    { grade: '2', classNum: '4', studentNum: '8', name: '나도현', id: 'dh.na1@ai.jne.kr' },
+    { grade: '2', classNum: '4', studentNum: '9', name: '박성훈', id: 'sh.park121@ai.jne.kr' },
+    { grade: '2', classNum: '4', studentNum: '10', name: '오중석', id: 'js.oh3@ai.jne.kr' },
+    { grade: '2', classNum: '4', studentNum: '11', name: '이성인', id: 'si.lee3@ai.jne.kr' },
+    { grade: '2', classNum: '4', studentNum: '12', name: '정연우', id: 'yu.jung11@ai.jne.kr' },
+    { grade: '2', classNum: '4', studentNum: '13', name: '정예훈', id: 'yh.jung17@ai.jne.kr' },
+    { grade: '2', classNum: '4', studentNum: '14', name: '조익승', id: 'is.cho5@ai.jne.kr' },
+    { grade: '2', classNum: '4', studentNum: '15', name: '최은우', id: 'eu.choi4@ai.jne.kr' },
+    { grade: '2', classNum: '4', studentNum: '16', name: '한광현', id: 'gh.han2@ai.jne.kr' },
+    { grade: '3', classNum: '1', studentNum: '1', name: '강가영', id: 'gy.kang3@ai.jne.kr' },
+    { grade: '3', classNum: '1', studentNum: '2', name: '고다은', id: 'de.ko4@ai.jne.kr' },
+    { grade: '3', classNum: '1', studentNum: '3', name: '김민서', id: 'ms.kim78@ai.jne.kr' },
+    { grade: '3', classNum: '1', studentNum: '4', name: '김하은', id: 'he.kim24@ai.jne.kr' },
+    { grade: '3', classNum: '1', studentNum: '5', name: '박은빈', id: 'eb.park3@ai.jne.kr' },
+    { grade: '3', classNum: '1', studentNum: '6', name: '양하람', id: 'hr.yang4@ai.jne.kr' },
+    { grade: '3', classNum: '1', studentNum: '7', name: '유효정', id: 'hj.yoo8@ai.jne.kr' },
+    { grade: '3', classNum: '1', studentNum: '8', name: '전채윤', id: 'cy.jeon1@ai.jne.kr' },
+    { grade: '3', classNum: '1', studentNum: '9', name: '한서현', id: 'sh.han15@ai.jne.kr' },
+    { grade: '3', classNum: '1', studentNum: '10', name: '김희태', id: 'ht.kim2@ai.jne.kr' },
+    { grade: '3', classNum: '1', studentNum: '11', name: '박용훈', id: 'yh.park14@ai.jne.kr' },
+    { grade: '3', classNum: '1', studentNum: '12', name: '배유빈', id: 'yb.bae3@ai.jne.kr' },
+    { grade: '3', classNum: '1', studentNum: '13', name: '양지헌', id: 'jh.yang14@ai.jne.kr' },
+    { grade: '3', classNum: '1', studentNum: '14', name: '위윤태', id: 'yt.wi1@ai.jne.kr' },
+    { grade: '3', classNum: '1', studentNum: '15', name: '윤지호', id: 'jh.yoon29@ai.jne.kr' },
+    { grade: '3', classNum: '1', studentNum: '16', name: '임정원', id: 'jw.lim5@ai.jne.kr' },
+    { grade: '3', classNum: '1', studentNum: '17', name: '조용빈', id: 'yb.cho8@ai.jne.kr' },
+    { grade: '3', classNum: '1', studentNum: '18', name: '최무림', id: 'mr.choi2@ai.jne.kr' },
+    { grade: '3', classNum: '1', studentNum: '19', name: '최은함', id: 'eh.choi5@ai.jne.kr' },
+    { grade: '3', classNum: '2', studentNum: '1', name: '김소연', id: 'sy.kim177@ai.jne.kr' },
+    { grade: '3', classNum: '2', studentNum: '2', name: '김윤담', id: 'yd.kim5@ai.jne.kr' },
+    { grade: '3', classNum: '2', studentNum: '3', name: '류다빈', id: 'db.ryu1@ai.jne.kr' },
+    { grade: '3', classNum: '2', studentNum: '4', name: '서은채', id: 'ec.seo1@ai.jne.kr' },
+    { grade: '3', classNum: '2', studentNum: '5', name: '오가은', id: 'ge.oh1@ai.jne.kr' },
+    { grade: '3', classNum: '2', studentNum: '6', name: '윤지수', id: 'js.yoon9@ai.jne.kr' },
+    { grade: '3', classNum: '2', studentNum: '7', name: '이자연', id: 'jy.lee59@ai.jne.kr' },
+    { grade: '3', classNum: '2', studentNum: '8', name: '이호연', id: 'hy.lee51@ai.jne.kr' },
+    { grade: '3', classNum: '2', studentNum: '9', name: '강동현', id: 'dh.kang11@ai.jne.kr' },
+    { grade: '3', classNum: '2', studentNum: '10', name: '강태훈', id: 'th.kang11@ai.jne.kr' },
+    { grade: '3', classNum: '2', studentNum: '11', name: '김선우', id: 'su.kim50@ai.jne.kr' },
+    { grade: '3', classNum: '2', studentNum: '12', name: '김우중', id: 'uj.kim23@ai.jne.kr' },
+    { grade: '3', classNum: '2', studentNum: '13', name: '박성민', id: 'sm.park26@ai.jne.kr' },
+    { grade: '3', classNum: '2', studentNum: '14', name: '서예준', id: 'yj.seo26@ai.jne.kr' },
+    { grade: '3', classNum: '2', studentNum: '15', name: '이시훈', id: 'sh.lee130@ai.jne.kr' },
+    { grade: '3', classNum: '2', studentNum: '16', name: '임지언', id: 'je.lim3@ai.jne.kr' },
+    { grade: '3', classNum: '2', studentNum: '17', name: '정도울', id: 'du.jung5@ai.jne.kr' },
+    { grade: '3', classNum: '2', studentNum: '18', name: '정지성', id: 'js.jung7@ai.jne.kr' },
+    { grade: '3', classNum: '2', studentNum: '19', name: '정현진', id: 'hj.jung32@ai.jne.kr' },
+    { grade: '3', classNum: '3', studentNum: '1', name: '김가희', id: 'gh.kim50@ai.jne.kr' },
+    { grade: '3', classNum: '3', studentNum: '2', name: '김도윤', id: 'dy.kim85@ai.jne.kr' },
+    { grade: '3', classNum: '3', studentNum: '3', name: '류시우', id: 'su.ryu2@ai.jne.kr' },
+    { grade: '3', classNum: '3', studentNum: '4', name: '이유나', id: 'yn.lee11@ai.jne.kr' },
+    { grade: '3', classNum: '3', studentNum: '5', name: '이지후', id: 'jh.lee115@ai.jne.kr' },
+    { grade: '3', classNum: '3', studentNum: '6', name: '이하임', id: 'hi.lee8@ai.jne.kr' },
+    { grade: '3', classNum: '3', studentNum: '7', name: '전지현', id: 'jh.jeon10@ai.jne.kr' },
+    { grade: '3', classNum: '3', studentNum: '8', name: '황서영', id: 'sy.hwang12@ai.jne.kr' },
+    { grade: '3', classNum: '3', studentNum: '9', name: '강순범', id: 'sb.kang3@ai.jne.kr' },
+    { grade: '3', classNum: '3', studentNum: '10', name: '강시후', id: 'sh.kang11@ai.jne.kr' },
+    { grade: '3', classNum: '3', studentNum: '11', name: '김민삼', id: 'ms.kim79@ai.jne.kr' },
+    { grade: '3', classNum: '3', studentNum: '12', name: '김찬슬', id: 'cs.kim4@ai.jne.kr' },
+    { grade: '3', classNum: '3', studentNum: '13', name: '문태정', id: 'tj.moon3@ai.jne.kr' },
+    { grade: '3', classNum: '3', studentNum: '14', name: '박종현', id: 'jh.park121@ai.jne.kr' },
+    { grade: '3', classNum: '3', studentNum: '15', name: '엄동현', id: 'dh.eom1@ai.jne.kr' },
+    { grade: '3', classNum: '3', studentNum: '16', name: '이준서', id: 'js.lee39@ai.jne.kr' },
+    { grade: '3', classNum: '3', studentNum: '17', name: '이현찬', id: 'hc.lee1@ai.jne.kr' },
+    { grade: '3', classNum: '3', studentNum: '18', name: '임상원', id: 'sw.lim4@ai.jne.kr' },
+    { grade: '3', classNum: '3', studentNum: '19', name: '조동윤', id: 'dy.cho3@ai.jne.kr' },
+    { grade: '3', classNum: '4', studentNum: '1', name: '고민정', id: 'mj.ko9@ai.jne.kr' },
+    { grade: '3', classNum: '4', studentNum: '2', name: '김한솔', id: 'hs.kim62@ai.jne.kr' },
+    { grade: '3', classNum: '4', studentNum: '3', name: '김희빈', id: 'hb.kim29@ai.jne.kr' },
+    { grade: '3', classNum: '4', studentNum: '4', name: '윤서희', id: 'sh.yoon20@ai.jne.kr' },
+    { grade: '3', classNum: '4', studentNum: '5', name: '윤현서', id: 'hs.yoon5@ai.jne.kr' },
+    { grade: '3', classNum: '4', studentNum: '6', name: '이서연', id: 'sy.lee150@ai.jne.kr' },
+    { grade: '3', classNum: '4', studentNum: '7', name: '이성연', id: 'sy.lee151@ai.jne.kr' },
+    { grade: '3', classNum: '4', studentNum: '8', name: '이희주', id: 'hj.lee52@ai.jne.kr' },
+    { grade: '3', classNum: '4', studentNum: '9', name: '장예진', id: 'yj.jang15@ai.jne.kr' },
+    { grade: '3', classNum: '4', studentNum: '10', name: '김대근', id: 'dg.kim32@ai.jne.kr' },
+    { grade: '3', classNum: '4', studentNum: '11', name: '김도경', id: 'dg.kim33@ai.jne.kr' },
+    { grade: '3', classNum: '4', studentNum: '12', name: '김현재', id: 'hj.kim69@ai.jne.kr' },
+    { grade: '3', classNum: '4', studentNum: '13', name: '문찬', id: 'c.moon1@ai.jne.kr' },
+    { grade: '3', classNum: '4', studentNum: '14', name: '서예성', id: 'ys.seo10@ai.jne.kr' },
+    { grade: '3', classNum: '4', studentNum: '15', name: '선유찬', id: 'yc.sun1@ai.jne.kr' },
+    { grade: '3', classNum: '4', studentNum: '16', name: '양현창', id: 'hc.yang3@ai.jne.kr' },
+    { grade: '3', classNum: '4', studentNum: '17', name: '이권희', id: 'gh.lee36@ai.jne.kr' },
+    { grade: '3', classNum: '4', studentNum: '18', name: '최용진', id: 'yj.choi31@ai.jne.kr' },
+    { grade: '3', classNum: '4', studentNum: '19', name: '최은빈', id: 'eb.choi6@ai.jne.kr' }
+
+  ];
+  // ---------------------------------------------------------
+
+  // 상태 관리
+  const [showNotice, setShowNotice] = useState(true);
+  const [formData, setFormData] = useState({
+    grade: '',
+    classNum: '',
+    studentNum: '',
+    name: ''
+  });
+  const [searchResult, setSearchResult] = useState({ status: 'idle', data: null }); // 'idle', 'found', 'not_found'
+
+  // 입력값 변경 핸들러
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  // 계정 검색 로직
+  const handleSearch = (e) => {
+    e.preventDefault();
+    const { grade, classNum, studentNum, name } = formData;
+    
+    // 입력값 검증
+    if (!grade || !classNum || !studentNum || !name) {
+      alert('모든 정보를 정확하게 입력해주세요.');
+      return;
+    }
+
+    // 학생 데이터에서 검색
+    const foundStudent = studentData.find(student => 
+      student.grade === grade &&
+      student.classNum === classNum &&
+      student.studentNum === studentNum &&
+      student.name === name
+    );
+
+    if (foundStudent) {
+      setSearchResult({ status: 'found', data: foundStudent });
+    } else {
+      setSearchResult({ status: 'not_found', data: null });
+    }
+  };
+
+  // 클립보드 복사 함수 (어떤 브라우저 환경에서도 잘 작동하도록 구현)
+  const handleCopy = (text, type) => {
+    try {
+      const textArea = document.createElement("textarea");
+      textArea.value = text;
+      document.body.appendChild(textArea);
+      textArea.select();
+      document.execCommand("copy");
+      document.body.removeChild(textArea);
+      alert(`${type} 복사되었습니다. 카카오톡 채팅방에 붙여넣기 해주세요.`);
+    } catch (err) {
+      alert('복사에 실패했습니다.');
+    }
+  };
+
+  // 카카오 오픈채팅 연결 로직
+  const handleKakaoRequest = () => {
+    window.open(KAKAO_CHAT_URL, '_blank');
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-50 flex flex-col items-center py-10 px-4 font-sans">
+
+      {/* 메인 컨텐츠 */}
+      <div className="max-w-md w-full bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+        <div className="bg-gradient-to-r from-blue-600 to-indigo-700 p-6 text-center">
+          <h1 className="text-2xl font-extrabold text-white">전남아이모두</h1>
+          <p className="text-blue-100 mt-1">학생 계정 찾기 및 잠금 해제 요청</p>
+        </div>
+
+        <div className="p-6">
+          <form onSubmit={handleSearch} className="space-y-4">
+            <div className="grid grid-cols-3 gap-3">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">학년</label>
+                <input 
+                  type="number" 
+                  name="grade"
+                  value={formData.grade}
+                  onChange={handleInputChange}
+                  placeholder="예: 1"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">반</label>
+                <input 
+                  type="number" 
+                  name="classNum"
+                  value={formData.classNum}
+                  onChange={handleInputChange}
+                  placeholder="예: 2"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">번호</label>
+                <input 
+                  type="number" 
+                  name="studentNum"
+                  value={formData.studentNum}
+                  onChange={handleInputChange}
+                  placeholder="예: 15"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+                  required
+                />
+              </div>
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">이름</label>
+              <input 
+                type="text" 
+                name="name"
+                value={formData.name}
+                onChange={handleInputChange}
+                placeholder="학생 이름 입력"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+                required
+              />
+            </div>
+
+            <button 
+              type="submit"
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg flex items-center justify-center transition duration-200 mt-2"
+            >
+              <Search className="w-5 h-5 mr-2" />
+              내 계정 찾기
+            </button>
+          </form>
+
+          {/* 검색 결과 표시 영역 */}
+          {searchResult.status === 'not_found' && (
+            <div className="mt-6 p-4 bg-red-50 text-red-700 rounded-lg flex items-start border border-red-100">
+              <Info className="w-5 h-5 mr-2 flex-shrink-0 mt-0.5" />
+              <p className="text-sm">입력하신 정보와 일치하는 계정을 찾을 수 없습니다. 학년, 반, 번호, 이름을 다시 확인해주세요.</p>
+            </div>
+          )}
+
+          {searchResult.status === 'found' && (
+            <div className="mt-6 animate-fade-in">
+              <div className="p-5 bg-green-50 border border-green-200 rounded-lg text-center">
+                <p className="text-gray-600 text-sm mb-1">{searchResult.data.name} 학생의 아이디는</p>
+                <p className="text-2xl font-bold text-green-700">{searchResult.data.id}</p>
+                <p className="text-gray-600 text-sm mt-1">입니다.</p>
+              </div>
+
+              <div className="mt-6 border-t border-gray-200 pt-6">
+                <h3 className="font-semibold text-gray-800 mb-2 flex items-center">
+                  <Lock className="w-4 h-4 mr-1 text-gray-600" />
+                  비밀번호를 5회 이상 틀렸나요?
+                </h3>
+                <p className="text-sm text-gray-600 mb-4">
+                  계정이 잠겼다면 아래 버튼을 눌러 선생님께 카카오톡으로 잠금 해제를 요청하세요.
+                </p>
+                <button 
+                  onClick={handleKakaoRequest}
+                  className="w-full bg-[#FEE500] hover:bg-[#FADA0A] text-[#371D1E] font-bold py-3 rounded-lg flex items-center justify-center transition duration-200"
+                >
+                  <MessageCircle className="w-5 h-5 mr-2" />
+                  카카오톡 오픈채팅으로 요청하기
+                </button>
+                
+                {/* 채팅방에 보낼 내용 복사 기능 */}
+                <div className="mt-4 p-3 bg-gray-100 rounded-lg text-sm text-left">
+                  <p className="text-gray-600 text-xs mb-2 font-medium">※ 오픈채팅방에 보낼 양식을 미리 복사해두면 편리합니다.</p>
+                  <button 
+                    onClick={() => {
+                      const bodyText = `선생님, 안녕하세요.\n\n제 전남아이모두 계정이 잠겼습니다. 비밀번호 초기화를 요청합니다.\n\n- 학번: ${searchResult.data.grade}학년 ${searchResult.data.classNum}반 ${searchResult.data.studentNum}번\n- 이름: ${searchResult.data.name}\n- 아이디: ${searchResult.data.id}\n\n감사합니다.`;
+                      handleCopy(bodyText, "요청 내용이");
+                    }}
+                    className="w-full bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 py-2 rounded transition text-sm font-medium"
+                  >
+                    📝 요청 내용 복사하기
+                  </button>
+                  <p className="text-gray-500 text-[11px] mt-2">정보를 복사한 후, 오픈채팅방에 붙여넣기 해서 보내주세요.</p>
+                </div>
+
+                <p className="text-xs text-center text-gray-500 mt-3">
+                  ※ 요청 후 처리까지 시간이 필요합니다.
+                </p>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+      
+      
+      <style dangerouslySetInnerHTML={{__html: `
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+          animation: fadeIn 0.4s ease-out forwards;
+        }
+      `}} />
+    </div>
+  );
+}
